@@ -1,0 +1,128 @@
+﻿@using GashPortal.Core;
+@{
+    Layout = null;
+    var _member = Member;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Image/favicon.ico")" rel='icon' type='image/x-icon' />
+    <title>@ViewBag.Title</title>
+    <link href="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Content/bootstrap.css")" rel="stylesheet" />
+    <link href="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Content/animate.css")" rel="stylesheet" />
+    <link href="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Content/font-awesome.min.css")" rel="stylesheet" />
+    <link href="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Content/ladda.min.css")" rel="stylesheet" />
+    <link href="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Content/style.css")" rel="stylesheet" />
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/jquery-1.12.4.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/jquery.validate.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/jquery.validate.unobtrusive.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/bootstrap.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/spin.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/ladda.min.js")"></script>
+    <script src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Scripts/Layout.js")"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <!--Header-->
+    <nav id="header" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <a id="menu-toggle" href="javascript:void(0);" class="btn btn-lg"><i class="fa fa-bars"></i></a>
+            <a class="navbar-brand" href="javascript:void(0);">
+                <img src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Image/gash-logo.svg")" />
+                <h1>@PortalConfig.ProjectName</h1>
+            </a>
+        </div>
+        <!--上方選單-->
+        <ul id="mobile-nav" class="nav navbar-right top-nav dropup">
+            <!--我的專案-->
+            <li class="dropdown my-project">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fui-list-small-thumbnails" aria-hidden="true"></i>
+                </a>
+                <ul class="dropdown-menu message-dropdown">
+                    <li class="project-sub">我的專案</li>
+                    <li>
+                        <div class="project-list">
+                            <ul>
+                                @{ Html.RenderPartial("~/Views/Shared/_Project.cshtml"); }
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <!--我的帳號-->
+            <li class="dropdown my-account">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fui-user"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="project-sub">我的帳號</li>
+                    <li class="message-preview">
+                        <a href="javascript:void(0);">
+                            <div class="media">
+                                <!-- 個人頭像-預設未來設定-隱藏-->
+                                <span class="pull-left" style="display: none">
+                                    <img class="img-responsive" src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Image/project_default.png")" alt="">
+                                </span>
+                                <!-- /.個人頭像-預設未來設定-隱藏-->
+                                <div class="media-body">
+                                    <h5 class="media-heading">
+                                        <strong>@_member.NickName</strong>
+                                    </h5>
+                                    @*<p>@_member.Job</p>*@
+                                    @if (_member.Company != null && !string.IsNullOrEmpty(_member.Company.CompanyName))
+                                    {
+                                        <p>@_member.Company.CompanyName</p>
+                                    }
+                                    <p class="small text-muted">@_member.Job</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="project-footer">
+                        <a href="@Url.Action("SignOut", new { Token = Token })" class="btn btn-link">
+                            <i class="fa fa-fw fa-power-off"></i> 登出
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!--gotop-->
+            <li class="dropdown visible-xs">
+                <a id="gotop" href="javascript:void(0);" class="dropdown-toggle visible-xs" data-toggle="dropdown">
+                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+        <div class="overlay"></div>
+        <!--左側選單-->
+        <ul id="sidebar-wrapper" class="nav navbar-nav side-nav">
+            <li>
+                <a id="menu-close" href="javascript:void(0);" class="btn btn-lg"><i class="fa fa-times"></i></a>
+            </li>
+            @{ Html.RenderAction("Navigation", new { appSettings = false }); }
+        </ul>
+    </nav>
+    <section>
+        <div id="container" class="container">
+            <!---內容---->
+            @RenderBody()
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="text-muted">©@DateTime.Now.Year GASH Co, Ltd. All Right Reserved.</p>
+    </footer>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

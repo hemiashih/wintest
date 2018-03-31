@@ -1,0 +1,39 @@
+﻿@using GashPortal.Core;
+@using Newtonsoft.Json.Linq;
+@using System.Collections.Generic;
+@using Gash.Core;
+
+@{
+    var _project = Anydoor.Post(new GashPortal.Core.Enter()
+    {
+        Token = Token,
+        Key = 8,
+        Value = new Role(null).ConvertTo()
+    });
+
+    var _Json = JObject.Parse(_project);
+
+    var _projects = _Json["Result"].ToString().ConvertTo<List<SystemInfo>>();
+}
+
+@{
+    if (_projects != null && _projects.Count > 0)
+    {
+        foreach (var item in _projects)
+        {
+            <li class="project-item">
+                <a href="@string.Format("{0}{1}/TurnIn?Token={2}", item.Url, item.TurnInController, Token)">
+                    @if (string.IsNullOrEmpty(item.Icon))
+                    {
+                        <img src="@string.Format("{0}{1}",PortalConfig.PortalUrl, "Image/project_default.png")" alt="" class="img-responsive">
+                    }
+                    else
+                    {
+                        <img src="@string.Format("{0}{1}/{2}",PortalConfig.PortalUrl, "Image",item.Icon)" alt="" class="img-responsive">
+                    }
+                    <p>@item.Description</p>
+                </a>
+            </li>
+        }
+    }
+}

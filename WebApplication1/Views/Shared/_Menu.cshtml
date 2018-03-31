@@ -1,0 +1,89 @@
+﻿@model IEnumerable<GashPortal.Core.Menu>
+
+@*
+    使用方式
+    @{ Html.RenderAction("Navigation" }
+    @{ Html.RenderAction("Navigation", new { appSettings = false } } => 選自於哪個Web.Config Key (appSettings == false 自動抓取 GashPortal section Key)
+    @{ Html.RenderAction("Navigation", new { WebConfigViewUrl = "Menu" } } => 選擇顯示於哪個畫面
+    @{ Html.RenderAction("Navigation", new { WebConfigViewUrl = "Menu", Key = "Navigation" } } => 選擇顯示於哪個畫面,權限 Map Key
+*@
+
+@{
+    var itemCount = 0;
+    var itemName = "item";
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        if (item.UpLevelID == 0)
+        {
+            if (string.IsNullOrEmpty(item.Url))
+            {
+                var tmp = Model.Where(i => i.UpLevelID == item.ID);
+                if (tmp.Count() > 0)
+                {
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="collapse" data-target="@string.Format("#{0}{1}", itemName, ++itemCount)">
+                            @if (!string.IsNullOrEmpty(item.Icon))
+                            {
+                                <i class="@item.Icon"></i>
+                            }
+                            @*<i class="fui-bookmark" />*@
+                            @Html.DisplayFor(modelItem => item.Description)
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                        <ul id="@string.Format("{0}{1}", itemName, itemCount)" class="collapse">
+                            @foreach (var detail in tmp)
+                            {
+                                <li>
+                                    @if (Html.DisplayFor(modelItem => modelItem.FirstOrDefault(j => j.ID == detail.ID).Url).ToString().IndexOf("http", 0, 4) == 0)
+                                    {
+                                        <a href="@Html.DisplayFor(modelItem => modelItem.FirstOrDefault(j => j.ID == detail.ID).Url)">
+                                            @Html.DisplayFor(modelItem => modelItem.FirstOrDefault(j => j.ID == detail.ID).Description)
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @Ajax.ActionLink(Html.DisplayFor(modelItem => modelItem.FirstOrDefault(j => j.ID == detail.ID).Description).ToString(),
+                                                         Html.DisplayFor(modelItem => modelItem.FirstOrDefault(j => j.ID == detail.ID).Url).ToString(),
+                                                         new AjaxOptions
+                                                         {
+                                                             UpdateTargetId = "container",
+                                                             InsertionMode = InsertionMode.Replace,
+                                                         });
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a href="javascript:void(0);">
+                            @if (!string.IsNullOrEmpty(item.Icon))
+                            {
+                                <i class="@item.Icon"></i>
+                            }
+                            @Html.DisplayFor(modelItem => item.Description)
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li>
+                    <a href="@item.Url">
+                        @if (!string.IsNullOrEmpty(item.Icon))
+                        {
+                            <i class="@item.Icon"></i>
+                        }
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </a>
+                </li>
+            }
+        }
+    }
+}
